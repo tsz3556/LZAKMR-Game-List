@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>LZAKMR GAME list</title>
 <style>
     :root {
@@ -15,7 +15,7 @@
     }
     
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         background-color: var(--bg-color);
         color: var(--text-color);
         margin: 0;
@@ -23,6 +23,7 @@
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+        -webkit-tap-highlight-color: transparent; /* 移除点击高亮背景 */
     }
 
     /* 顶部 Hero 区域 */
@@ -31,23 +32,25 @@
         color: white;
         padding: 60px 20px 100px; /* 底部留白给卡片上浮 */
         text-align: center;
-        clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); /* 底部斜切造型 */
+        clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        transition: padding 0.3s ease;
     }
     
-    h1 { margin: 0; font-size: 2.8em; font-weight: 700; letter-spacing: 1px; }
-    p.subtitle { opacity: 0.9; font-size: 1.2em; margin-top: 15px; font-weight: 300; }
+    h1 { margin: 0; font-size: 2.8em; font-weight: 700; letter-spacing: 1px; line-height: 1.2; }
+    p.subtitle { opacity: 0.9; font-size: 1.2em; margin-top: 10px; font-weight: 300; }
 
     /* 导航卡片容器 */
     .nav-container {
         max-width: 1100px;
-        margin: -80px auto 40px; /* 负边距实现卡片上浮效果 */
+        margin: -80px auto 40px; /* 负边距实现卡片上浮 */
         padding: 0 20px;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); /* 响应式网格 */
+        /* 桌面端默认逻辑 */
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 20px;
         position: relative;
         z-index: 10;
-        flex: 1; /* 让容器填满剩余空间 */
+        flex: 1;
     }
 
     /* 卡片样式 */
@@ -59,7 +62,7 @@
         text-align: center;
         text-decoration: none;
         color: var(--text-color);
-        transition: all 0.3s ease;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
         border: 1px solid rgba(0,0,0,0.02);
         display: flex;
         flex-direction: column;
@@ -67,119 +70,151 @@
         align-items: center;
         position: relative;
         overflow: hidden;
+        cursor: pointer;
     }
 
-    /* 悬停特效 */
-    .nav-card:hover {
-        transform: translateY(-10px);
-        box-shadow: var(--hover-shadow);
-        border-color: #e0e0e0;
+    /* 桌面端悬停特效 */
+    @media (hover: hover) {
+        .nav-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--hover-shadow);
+            border-color: #e0e0e0;
+        }
+        
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            transition: 0.5s;
+        }
+        .nav-card:hover::before { left: 100%; }
     }
-    
-    /* 简单的光泽动画 */
-    .nav-card::before {
-        content: '';
-        position: absolute;
-        top: 0; left: -100%;
-        width: 100%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
-        transition: 0.5s;
+
+    /* 移动端点击反馈 */
+    .nav-card:active {
+        transform: scale(0.96);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    .nav-card:hover::before { left: 100%; }
+
+    .nav-card .icon {
+        font-size: 36px;
+        margin-bottom: 5px;
+        display: block;
+    }
 
     .nav-card h3 {
-        margin: 10px 0 0;
+        margin: 5px 0 0;
         font-size: 1.25em;
         color: #2c3e50;
         font-weight: 600;
+        line-height: 1.3;
     }
     
     .nav-card .tag {
         display: inline-block;
         margin-top: 12px;
-        padding: 6px 16px;
+        padding: 6px 14px;
         background-color: #e3f2fd;
         color: #1565c0;
         border-radius: 50px;
-        font-size: 0.9em;
+        font-size: 0.85em;
         font-weight: bold;
     }
 
     /* 底部 */
     footer {
         text-align: center;
-        padding: 30px;
+        padding: 20px;
         color: #999;
-        font-size: 0.9em;
+        font-size: 0.85em;
         background: #fff;
         margin-top: auto;
     }
 
-    /* 手机端适配 */
-    @media (max-width: 600px) {
-        header { padding-bottom: 60px; clip-path: none; }
-        .nav-container { margin-top: -30px; }
-        h1 { font-size: 2em; }
+    /* --- 移动端深度适配 (Tablet & Mobile) --- */
+    @media (max-width: 768px) {
+        header { 
+            padding: 40px 15px 70px; /* 减小头部高度 */
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+        }
+        
+        h1 { font-size: 1.8em; } /* 标题变小 */
+        p.subtitle { font-size: 1em; }
+
+        .nav-container { 
+            margin-top: -50px; 
+            padding: 0 15px;
+            gap: 15px;
+            /* 关键：调整为更小的最小宽度，让手机能显示两列 */
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        }
+
+        .nav-card {
+            padding: 20px 10px; /* 减小卡片内边距 */
+            border-radius: 12px;
+        }
+
+        .nav-card .icon { font-size: 28px; }
+        .nav-card h3 { font-size: 1.05em; }
+        .nav-card .tag { padding: 4px 10px; font-size: 0.75em; margin-top: 8px; }
     }
 </style>
 </head>
 <body>
 
 <header>
-    <h1>Welcome to LZAKMR Game List</h1>
+    <h1>LZAKMR Game List</h1>
     <p class="subtitle">Select your console version</p>
 </header>
 
 <div class="nav-container">
 
     <a href="https://tsz3556.github.io/LZAKMR-Game-List/LZAKMR BOX 500GB.html" class="nav-card" target="_blank">
-        <span style="font-size: 30px;">📦</span>
+        <span class="icon">📦</span>
         <h3>LZAKMR BOX</h3>
         <span class="tag">500GB</span>
     </a>
     
-    <a href="https://tsz3556.github.io/LZAKMR-Game-List/LZAKMR BOX Game list(i3 1TB).html
-" class="nav-card" target="_blank">
-        <span style="font-size: 30px;">📦</span>
+    <a href="https://tsz3556.github.io/LZAKMR-Game-List/LZAKMR BOX Game list(i3 1TB).html" class="nav-card" target="_blank">
+        <span class="icon">📦</span>
         <h3>LZAKMR BOX</h3>
         <span class="tag">1TB</span>
     </a>
 
-        <a href="https://tsz3556.github.io/LZAKMR-Game-List/LZAKMR Ultra BOX Game 500GB.html
-" class="nav-card" target="_blank">
-        <span style="font-size: 30px;">🚀</span>
+    <a href="https://tsz3556.github.io/LZAKMR-Game-List/LZAKMR Ultra BOX Game 500GB.html" class="nav-card" target="_blank">
+        <span class="icon">🚀</span>
         <h3>LZAKMR Ultra</h3>
         <span class="tag" style="background-color: #f3e5f5; color: #7b1fa2;">500GB</span>
     </a>
     
-    <a href="https://tsz3556.github.io/LZAKMR-Game-List/LZAKMR Ultra BOX 1T game list.html
-" class="nav-card" target="_blank">
-        <span style="font-size: 30px;">🚀</span>
+    <a href="https://tsz3556.github.io/LZAKMR-Game-List/LZAKMR Ultra BOX 1T game list.html" class="nav-card" target="_blank">
+        <span class="icon">🚀</span>
         <h3>LZAKMR Ultra</h3>
         <span class="tag" style="background-color: #f3e5f5; color: #7b1fa2;">1TB</span>
     </a>
     
     <a href="https://tsz3556.github.io/LZAKMR-Game-List/LZAKMR Ultra BOX 2TB Game list.html" class="nav-card" target="_blank">
-        <span style="font-size: 30px;">🚀</span>
+        <span class="icon">🚀</span>
         <h3>LZAKMR Ultra</h3>
         <span class="tag" style="background-color: #f3e5f5; color: #7b1fa2;">2TB</span>
     </a>
     
     <a href="https://tsz3556.github.io/LZAKMR-Game-List/LZAKMR Neostation Game 500GB .html" class="nav-card" target="_blank">
-        <span style="font-size: 30px;">🎮</span>
+        <span class="icon">🎮</span>
         <h3>Neostation</h3>
         <span class="tag" style="background-color: #e0f2f1; color: #00695c;">500GB</span>
     </a>
     
-    <a href="https://tsz3556.github.io/LZAKMR-Game-List/LZAKMR Neostation Game 1TB.html
-" class="nav-card" target="_blank">
-        <span style="font-size: 30px;">🎮</span>
+    <a href="https://tsz3556.github.io/LZAKMR-Game-List/LZAKMR Neostation Game 1TB.html" class="nav-card" target="_blank">
+        <span class="icon">🎮</span>
         <h3>Neostation</h3>
         <span class="tag" style="background-color: #e0f2f1; color: #00695c;">1TB</span>
     </a>
     
     <a href="https://tsz3556.github.io/LZAKMR-Game-List/LZAKMR Neostation 2TB Game list.html" class="nav-card" target="_blank">
-        <span style="font-size: 30px;">🎮</span>
+        <span class="icon">🎮</span>
         <h3>Neostation</h3>
         <span class="tag" style="background-color: #e0f2f1; color: #00695c;">2TB</span>
     </a>
@@ -187,11 +222,8 @@
 </div>
 
 <footer>
-    <p>&copy; 2025 LZAKMR GAME list<</p>
+    <p>&copy; 2025 LZAKMR GAME List</p>
 </footer>
 
 </body>
-
 </html>
-
-
