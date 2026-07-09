@@ -20,7 +20,7 @@
 </style>
 </head>
 <body>
-<h1>LZAKMR Neostation 2TB Game list (99999 Games)</h1>
+<h1>LZAKMR Neostation 2TB Game list</h1>
 <div id="container"></div>
 <script>
   // 数据嵌入
@@ -30,7 +30,7 @@
   Object.keys(gamesData).sort().forEach(key => {
     const btn = document.createElement('button');
     btn.className = 'console-btn';
-    btn.innerHTML = `<span>${key}</span> <span>${gamesData[key].length}</span>`;
+    btn.innerHTML = `<span>${key}</span>`;
     
     const panel = document.createElement('div');
     panel.className = 'panel';
